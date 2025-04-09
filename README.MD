@@ -1,1 +1,1 @@
-`python book.py`
+`python book.py --name="Yoga" --day="January 1, 2025" --time="6:15 pm EDT"`

@@ -5,15 +5,25 @@ import traceback
 from playwright.sync_api import sync_playwright, TimeoutError
 import os
 from dotenv import load_dotenv
+import argparse
 
 load_dotenv()
 
 # ------------------------------------------------------------------------------
 # CONFIGURATION - Customize these for your environment
 # ------------------------------------------------------------------------------
-DESIRED_CLASS_NAME = ""
-DESIRED_CLASS_DAY = ""
-DESIRED_CLASS_TIME = ""
+# Parse command-line arguments
+parser = argparse.ArgumentParser(description="Book a Mindbody class.")
+parser.add_argument("--name", required=True, help="Name of the desired class.")
+parser.add_argument("--day", required=True, help="Day of the desired class (e.g., 'April 16, 2025').")
+parser.add_argument("--time", required=True, help="Time of the desired class (e.g., '6:15 pm EDT').")
+
+args = parser.parse_args()
+
+DESIRED_CLASS_NAME = args.name
+DESIRED_CLASS_DAY = args.day
+DESIRED_CLASS_TIME = args.time
+
 
 GYM_LOGIN_URL = ""
 GYM_SCHEDULE_URL = ""
