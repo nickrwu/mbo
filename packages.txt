@@ -11,3 +11,5 @@ libxdamage1
 libxfixes3
 libxrandr2
 libwayland-client0
+libcups2
+libxkbcommon0  
