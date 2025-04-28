@@ -10,7 +10,7 @@ def ensure_playwright():
     if not os.path.isdir(CACHE):
         try:
             # single command with deps on Linux
-            cmd = ["python", "-m", "playwright", "install", "--with-deps"]
+            cmd = ["playwright", "install", "--with-deps"]
             with st.spinner("Installing Playwright browsers…"):
                 subprocess.run(cmd, check=True)
         except subprocess.CalledProcessError as e:
