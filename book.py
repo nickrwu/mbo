@@ -17,12 +17,14 @@ parser = argparse.ArgumentParser(description="Book a Mindbody class.")
 parser.add_argument("--name", required=True, help="Name of the desired class.")
 parser.add_argument("--day", required=True, help="Day of the desired class (e.g., 'April 16, 2025').")
 parser.add_argument("--time", required=True, help="Time of the desired class (e.g., '6:15 pm EDT').")
+parser.add_argument("--headless", required=False, default=True)
 
 args = parser.parse_args()
 
 DESIRED_CLASS_NAME = args.name
 DESIRED_CLASS_DAY = args.day
 DESIRED_CLASS_TIME = args.time
+HEADLESS = args.headless
 
 
 GYM_LOGIN_URL = ""
@@ -55,13 +57,13 @@ def book_mindbody_class():
             # If using a proxy, supply that in the browser launch configuration
             if USE_PROXY:
                 browser = browser_type.launch(
-                    headless=True,
+                    headless=HEADLESS,
                     proxy={
                         "server": PROXY_SERVER
                     }
                 )
             else:
-                browser = browser_type.launch(headless=False)
+                browser = browser_type.launch(headless=HEADLESS)
 
             page = browser.new_page()
 
