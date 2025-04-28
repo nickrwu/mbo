@@ -5,6 +5,7 @@ import sys
 from datetime import date, time as dttime
 import subprocess
 import os
+import logging
 
 def ensure_playwright():
     CACHE = os.path.expanduser("~/.cache/ms-playwright")
@@ -19,6 +20,19 @@ def ensure_playwright():
             st.write(f"`{e.cmd}` exited with code {e.returncode}")
             # do NOT st.stop() if you still want the rest of your UI to render
     
+log_placeholder = st.empty()
+log_lines = []
+
+class StreamlitLogHandler(logging.Handler):
+    def emit(self, record):
+        log_lines.append(self.format(record))
+        # redraw the placeholder with all the accumulated lines
+        log_placeholder.text("\n".join(log_lines))
+
+handler = StreamlitLogHandler()
+handler.setLevel(logging.INFO)
+handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s"))
+logging.getLogger().addHandler(handler)
 
 st.title("🧘 Mindbody Class Booker")
 ensure_playwright()
