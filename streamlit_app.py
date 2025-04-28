@@ -5,7 +5,6 @@ import sys
 from datetime import date, time as dttime
 import subprocess
 import os
-import logging
 
 def ensure_playwright():
     CACHE = os.path.expanduser("~/.cache/ms-playwright")
@@ -19,20 +18,6 @@ def ensure_playwright():
             st.error("⚠️ Could not install Playwright browsers. You may see failures when booking.")
             st.write(f"`{e.cmd}` exited with code {e.returncode}")
             # do NOT st.stop() if you still want the rest of your UI to render
-    
-log_placeholder = st.empty()
-log_lines = []
-
-class StreamlitLogHandler(logging.Handler):
-    def emit(self, record):
-        log_lines.append(self.format(record))
-        # redraw the placeholder with all the accumulated lines
-        log_placeholder.text("\n".join(log_lines))
-
-handler = StreamlitLogHandler()
-handler.setLevel(logging.INFO)
-handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s"))
-logging.getLogger().addHandler(handler)
 
 st.title("🧘 Mindbody Class Booker")
 ensure_playwright()
@@ -73,22 +58,27 @@ if st.button("Book Class"):
         env.update({"USERNAME": username, "PASSWORD": password})
 
         st.info(f"Running:\n`{cmd}`")
-        with st.spinner("Booking in progress…"):
-            result = subprocess.run(
-                cmd,
-                capture_output=True,
-                text=True,
-                env=env
-            )
-
-        if result.returncode == 0:
-            st.success("✅ Booking completed successfully!")
-        else:
-            st.error(f"❌ Booking failed (exit code {result.returncode})")
 
         st.subheader("Logs")
-        st.text_area(
-            "Output & Errors",
-            value=result.stdout + "\n" + result.stderr,
-            height=300
-        )
+        log_box = st.empty()
+        logs = ""
+
+        with st.spinner("Booking in progress…"):
+            proc = subprocess.Popen(
+                cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                env=env,
+            )
+            
+            # read line by line
+            for line in proc.stdout:
+                logs += line
+                log_box.text(logs)  # update UI with all lines so far
+            proc.wait()
+
+        if proc.returncode == 0:
+            st.success("✅ Booking completed successfully!")
+        else:
+            st.error(f"❌ Booking failed (exit code {proc.returncode})")
