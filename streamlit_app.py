@@ -5,6 +5,9 @@ from datetime import date, time as dttime
 import subprocess
 import os
 
+os.system("sudo playwright install-deps")
+os.system("playwright install")
+
 st.title("🧘 Mindbody Class Booker")
 
 # — credentials —
