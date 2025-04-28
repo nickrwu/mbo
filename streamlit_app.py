@@ -1,6 +1,7 @@
 # streamlit_app.py
 
 import streamlit as st
+import sys
 from datetime import date, time as dttime
 import subprocess
 import os
@@ -42,23 +43,22 @@ if st.button("Book Class"):
         day_str  = class_date.strftime("%B %d, %Y")
         time_str = class_time.strftime("%I:%M %p") + " EDT"
 
-        cmd = (
-            f'python book.py '
-            f'--name="{class_name}" '
-            f'--day="{day_str}" '
-            f'--time="{time_str}"'
-        )
+        cmd = [
+             sys.executable,
+             "book.py",
+             "--name", class_name,
+             "--day", day_str,
+             "--time", time_str,
+         ]
 
         # inject credentials into env
         env = os.environ.copy()
-        env["USERNAME"] = username
-        env["PASSWORD"] = password
+        env.update({"USERNAME": username, "PASSWORD": password})
 
         st.info(f"Running:\n`{cmd}`")
         with st.spinner("Booking in progress…"):
             result = subprocess.run(
                 cmd,
-                shell=True,
                 capture_output=True,
                 text=True,
                 env=env
