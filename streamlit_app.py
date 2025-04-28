@@ -5,6 +5,13 @@ from datetime import date, time as dttime
 import subprocess
 import os
 
+CACHE_DIR = os.path.expanduser("~/.cache/ms-playwright")
+if not os.path.isdir(CACHE_DIR):
+    # Install browser binaries if missing
+    subprocess.run(["playwright", "install-deps"], check=True)
+    subprocess.run(["playwright", "install"], check=True)
+    
+
 st.title("🧘 Mindbody Class Booker")
 
 # — credentials —
