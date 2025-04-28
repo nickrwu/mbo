@@ -5,14 +5,22 @@ from datetime import date, time as dttime
 import subprocess
 import os
 
-CACHE_DIR = os.path.expanduser("~/.cache/ms-playwright")
-if not os.path.isdir(CACHE_DIR):
-    # Install browser binaries if missing
-    subprocess.run(["playwright", "install-deps"], check=True)
-    subprocess.run(["playwright", "install"], check=True)
+def ensure_playwright():
+    CACHE = os.path.expanduser("~/.cache/ms-playwright")
+    if not os.path.isdir(CACHE):
+        try:
+            # single command with deps on Linux
+            cmd = ["python", "-m", "playwright", "install", "--with-deps"]
+            with st.spinner("Installing Playwright browsers…"):
+                subprocess.run(cmd, check=True)
+        except subprocess.CalledProcessError as e:
+            st.error("⚠️ Could not install Playwright browsers. You may see failures when booking.")
+            st.write(f"`{e.cmd}` exited with code {e.returncode}")
+            # do NOT st.stop() if you still want the rest of your UI to render
     
 
 st.title("🧘 Mindbody Class Booker")
+ensure_playwright()
 
 # — credentials —
 st.sidebar.header("Mindbody Login")
