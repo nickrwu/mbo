@@ -30,14 +30,15 @@ password = st.sidebar.text_input("Password", type="password")
 
 # — class selection —
 st.header("Class Details")
+gym_id = st.text_input("Gym ID", value="836167", help="e.g. '123456'")
 class_name = st.text_input("Class Name", help="e.g. 'Yoga Flow'")
 class_date = st.date_input("Class Date", min_value=date.today())
 class_time = st.time_input("Class Time", value=dttime(6, 15))
 
 # — action button —
 if st.button("Book Class"):
-    if not (username and password and class_name):
-        st.error("Please fill in username, password, and class name.")
+    if not (username and password and class_name and gym_id):
+        st.error("Please fill in username, password, gym ID, and class name.")
     else:
         # format exactly as: --name="Yoga Flow" --day="April 16, 2025" --time="06:15 PM EDT"
         day_str  = class_date.strftime("%B %d, %Y")
@@ -46,9 +47,10 @@ if st.button("Book Class"):
         cmd = [
              sys.executable,
              "book.py",
-             "--name", class_name,
+             "--name", gym_id,
              "--day", day_str,
              "--time", time_str,
+             "--id", 
              "--headless"
          ]
 

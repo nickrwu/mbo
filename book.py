@@ -17,6 +17,7 @@ parser = argparse.ArgumentParser(description="Book a Mindbody class.")
 parser.add_argument("--name", required=True, help="Name of the desired class.")
 parser.add_argument("--day", required=True, help="Day of the desired class (e.g., 'April 16, 2025').")
 parser.add_argument("--time", required=True, help="Time of the desired class (e.g., '6:15 pm EDT').")
+parser.add_argument("--id", required=True, help="Mindbody Gym ID")
 parser.add_argument(
     "--headless",
     action="store_true",
@@ -25,14 +26,15 @@ parser.add_argument(
 
 args = parser.parse_args()
 
+GYM_ID = args.id
 DESIRED_CLASS_NAME = args.name
 DESIRED_CLASS_DAY = args.day
 DESIRED_CLASS_TIME = args.time
 HEADLESS = args.headless
 
 
-GYM_LOGIN_URL = ""
-GYM_SCHEDULE_URL = ""
+GYM_LOGIN_URL = f"https://clients.mindbodyonline.com/classic/ws?studioid={GYM_ID}"
+GYM_SCHEDULE_URL = "https://clients.mindbodyonline.com/classic/mainclass?fl=true&tabID=7"
 USERNAME = os.getenv("USERNAME")
 PASSWORD = os.getenv("PASSWORD")
 DESIRED_CALENDAR_DATE = time.strftime("%m/%d/%Y", time.strptime(DESIRED_CLASS_DAY, "%B %d, %Y"))
