@@ -47,10 +47,10 @@ if st.button("Book Class"):
         cmd = [
              sys.executable,
              "book.py",
-             "--name", gym_id,
+             "--name", class_name,
              "--day", day_str,
              "--time", time_str,
-             "--id", 
+             "--id", gym_id,
              "--headless"
          ]
 
