@@ -17,7 +17,11 @@ parser = argparse.ArgumentParser(description="Book a Mindbody class.")
 parser.add_argument("--name", required=True, help="Name of the desired class.")
 parser.add_argument("--day", required=True, help="Day of the desired class (e.g., 'April 16, 2025').")
 parser.add_argument("--time", required=True, help="Time of the desired class (e.g., '6:15 pm EDT').")
-parser.add_argument("--headless", required=False, default=True)
+parser.add_argument(
+    "--headless",
+    action="store_true",
+    help="Run the browser in headless mode (default: headed if not provided)."
+)
 
 args = parser.parse_args()
 

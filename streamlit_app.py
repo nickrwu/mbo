@@ -49,7 +49,7 @@ if st.button("Book Class"):
              "--name", class_name,
              "--day", day_str,
              "--time", time_str,
-             "--headless", True,
+             "--headless"
          ]
 
         # inject credentials into env
