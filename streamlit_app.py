@@ -6,6 +6,53 @@ from datetime import date, time as dttime
 import subprocess
 import os
 
+CATEGORY_TO_CLASSES = {
+    "YOGA": [
+        "V2: All Levels Vinyasa Flow",
+        "V1: Alignment-Based Vinyasa",
+        "V3: Dynamic Vinyasa + Advanced Postures",
+        "V0 - Slow Flow",
+        "V-HAB: Recovery",
+        "HB: Hand Balancing",
+        "Guided Meditation",
+    ],
+    "CYCLE": ["vBeats", "vRide", "Festival Ride"],
+    "FITNESS": [
+        "Total Body Strength 45",
+        "Core 30",
+        "Total Body Endurance 45",
+        "Cardio Conditioning 30",
+        "Kettlebell Strength",
+    ],
+    "AERIAL": [
+        "Beginner Silks",
+        "Advanced Beginner Silks",
+        "Intermediate Silks",
+        "Intermediate/Advanced Silks",
+        "Hammock",
+        "Introduction to Silks",
+        "Circus Stretch (Ground Class)",
+        "Open Workout (AB +)",
+        "Choreography 1: Foundations (AB+)",
+        "Choreography 2: Lab (Instructor Rec)",
+    ],
+    "PORCH AERIAL": [
+        "Silks Conditioning",
+        "Beginner Silks",
+        "Introduction to Silks",
+        "Hammock",
+        "Choreography 1: Foundations (AB +)",
+        "Advanced Beginner Silks",
+    ],
+    "CLIMBING": [
+        "Holds and Directionality Technique Clinic",
+        "Footwork & Balance-Led Decision Making Technique Clinic",
+        "Bouldering Technique Fundamentals",
+        "Bouldering 101",
+    ],
+    "KIDS CLIMBING": ["Kids Bouldering 101"],
+}
+
 def ensure_playwright():
     CACHE = os.path.expanduser("~/.cache/ms-playwright")
     if not os.path.isdir(CACHE):
@@ -19,7 +66,7 @@ def ensure_playwright():
             st.write(f"`{e.cmd}` exited with code {e.returncode}")
             # do NOT st.stop() if you still want the rest of your UI to render
 
-st.title("🧘 Mindbody Class Booker")
+st.title("🧗‍♂️ Vital MBO")
 ensure_playwright()
 
 # — credentials —
@@ -30,7 +77,20 @@ password = st.sidebar.text_input("Password", type="password")
 # — class selection —
 st.header("Class Details")
 gym_id = st.text_input("Gym ID", value="836167", help="e.g. '123456'")
-class_name = st.text_input("Class Name", help="e.g. 'Yoga Flow'")
+category = st.selectbox("Category", list(CATEGORY_TO_CLASSES.keys()))
+filtered_classes = CATEGORY_TO_CLASSES.get(category, [])
+class_dropdown = st.selectbox(
+    "Class Name",
+    [f"{category} - {c}" for c in filtered_classes]
+)
+
+# Other override text input
+other_name = st.text_input(
+    "Other Class Name (override)",
+    help="Type here to override dropdown selection e.g. 'Yoga Flow'"
+)
+
+class_name = other_name.strip() if other_name.strip() else class_dropdown
 class_date = st.date_input("Class Date", min_value=date.today(), format="MM/DD/YYYY")
 class_time = st.time_input("Class Time", value=dttime(17, 15))
 
