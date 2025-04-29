@@ -79,7 +79,7 @@ if st.button("Book Class"):
                     break
                 logs += line
                 # re-render our placeholder with the fresh content
-                log_placeholder.text_area("Logs", logs, height=300, key="live_logs")
+                log_placeholder.code(logs, language="plain", line_numbers=True)
 
             proc.wait()
 
