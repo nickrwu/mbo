@@ -60,7 +60,7 @@ if st.button("Book Class"):
         st.info(f"Running:\n`{cmd}`")
 
         st.subheader("Logs")
-        log_text = st.text_area("Logs", value="", height=300, key="log_area")
+        log_placeholder = st.empty()
         logs = ""
 
         with st.spinner("Booking in progress…"):
@@ -72,14 +72,14 @@ if st.button("Book Class"):
                 env=env,
             )
             
+            # read and display incrementally
             while True:
-                # read line by line
                 line = proc.stdout.readline()
                 if not line:
                     break
                 logs += line
-                # re-render the same text_area (it’ll scroll)
-                st.session_state.log_area = logs  # update the widget’s value
+                # re-render our placeholder with the fresh content
+                log_placeholder.text_area("Logs", logs, height=300, key="live_logs")
 
             proc.wait()
 
