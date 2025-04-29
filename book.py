@@ -84,6 +84,15 @@ def book_mindbody_class():
             page.locator("input[name=\"requiredtxtPassword\"]").fill(PASSWORD)
             # 3. Submit the login form
             page.locator("input[name=\"btnSignUp2\"]").click()  # Adjust if different
+            # Check if an error is displayed
+            try:
+                page.locator("#LoginError").wait_for(timeout=2000)
+                error_message = page.locator("#LoginError").text_content()
+                logging.info(f"Login failed: {error_message}")
+                browser.close()
+                sys.exit(1)
+            except TimeoutError:
+                logging.info("No login error found. Continuing...")
 
             # 4. Wait for navigation or some post-login element
             try:
