@@ -80,8 +80,8 @@ def book_mindbody_class():
             # 2. Fill in username and password
             logging.info("Filling in login form...")
             # Adjust selectors to match your gym's site
-            page.locator("#ExistingUserPane").get_by_role("textbox", name="Email").fill(USERNAME)
-            page.locator("#ExistingUserPane").get_by_role("textbox", name="Password").fill(PASSWORD)
+            page.locator("input[name=\"requiredtxtUserName\"]").fill(USERNAME)
+            page.locator("input[name=\"requiredtxtPassword\"]").fill(PASSWORD)
             # 3. Submit the login form
             page.locator("input[name=\"btnSignUp2\"]").click()  # Adjust if different
 
