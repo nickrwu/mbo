@@ -80,13 +80,15 @@ def book_mindbody_class():
             # 2. Fill in username and password
             logging.info("Filling in login form...")
             # Adjust selectors to match your gym's site
-            page.locator("input[name=\"requiredtxtUserName\"]").fill(USERNAME)
-            page.locator("input[name=\"requiredtxtPassword\"]").fill(PASSWORD)
+            page.locator("input#su1UserName").fill(USERNAME)
+            page.locator("input#su1Password").fill(PASSWORD)
             # 3. Submit the login form
             page.locator("input[name=\"btnSignUp2\"]").click()  # Adjust if different
+            page.wait_for_load_state("networkidle")  # Wait for page load
+
             # Check if an error is displayed
             try:
-                page.locator("#LoginError").wait_for(timeout=2000)
+                page.locator("div#LoginError").wait_for(timeout=2000)
                 error_message = page.locator("#LoginError").text_content()
                 logging.info(f"Login failed: {error_message}")
                 browser.close()
