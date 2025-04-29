@@ -7,23 +7,6 @@ import subprocess
 import os
 
 CATEGORY_TO_CLASSES = {
-    "YOGA": [
-        "V2: All Levels Vinyasa Flow",
-        "V1: Alignment-Based Vinyasa",
-        "V3: Dynamic Vinyasa + Advanced Postures",
-        "V0 - Slow Flow",
-        "V-HAB: Recovery",
-        "HB: Hand Balancing",
-        "Guided Meditation",
-    ],
-    "CYCLE": ["vBeats", "vRide", "Festival Ride"],
-    "FITNESS": [
-        "Total Body Strength 45",
-        "Core 30",
-        "Total Body Endurance 45",
-        "Cardio Conditioning 30",
-        "Kettlebell Strength",
-    ],
     "AERIAL": [
         "Beginner Silks",
         "Advanced Beginner Silks",
@@ -50,7 +33,23 @@ CATEGORY_TO_CLASSES = {
         "Bouldering Technique Fundamentals",
         "Bouldering 101",
     ],
-    "KIDS CLIMBING": ["Kids Bouldering 101"],
+    "YOGA": [
+        "V2: All Levels Vinyasa Flow",
+        "V1: Alignment-Based Vinyasa",
+        "V3: Dynamic Vinyasa + Advanced Postures",
+        "V0 - Slow Flow",
+        "V-HAB: Recovery",
+        "HB: Hand Balancing",
+        "Guided Meditation",
+    ],
+    "CYCLE": ["vBeats", "vRide", "Festival Ride"],
+    "FITNESS": [
+        "Total Body Strength 45",
+        "Core 30",
+        "Total Body Endurance 45",
+        "Cardio Conditioning 30",
+        "Kettlebell Strength",
+    ],
 }
 
 def ensure_playwright():
