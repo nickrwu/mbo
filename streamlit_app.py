@@ -77,12 +77,28 @@ password = st.sidebar.text_input("Password", type="password")
 # — class selection —
 st.header("Class Details")
 gym_id = st.text_input("Gym ID", value="836167", help="e.g. '123456'")
-category = st.selectbox("Category", list(CATEGORY_TO_CLASSES.keys()), value="AERIAL")
+
+# Category dropdown with default
+categories = list(CATEGORY_TO_CLASSES.keys())
+default_category = "AERIAL"
+category = st.selectbox(
+    "Category",
+    categories,
+    index=categories.index(default_category) if default_category in categories else 0,
+)
+
+# Filter class list based on category
 filtered_classes = CATEGORY_TO_CLASSES.get(category, [])
+
+
+# Class dropdown with default override
+default_class = "Hammock"
+class_options = [f"{category} - {c}" for c in filtered_classes]
+default_index = filtered_classes.index(default_class) if default_class in filtered_classes else 0
 class_dropdown = st.selectbox(
-    "Class Name",
-    [f"{category} - {c}" for c in filtered_classes],
-    value="Hammock"
+    "Class Name (select from dropdown)",
+    class_options,
+    index=default_index,
 )
 
 # Other override text input
