@@ -6,6 +6,7 @@ from playwright.sync_api import sync_playwright, TimeoutError
 import os
 from dotenv import load_dotenv
 import argparse
+import random
 
 load_dotenv()
 
@@ -23,6 +24,11 @@ parser.add_argument(
     action="store_true",
     help="Run the browser in headless mode (default: headed if not provided)."
 )
+parser.add_argument(
+    "--proxy",
+    action="store_true",
+    help="Run the browser with proxy (default: Proxyless)"
+)
 
 args = parser.parse_args()
 
@@ -32,6 +38,10 @@ DESIRED_CLASS_DAY = args.day
 DESIRED_CLASS_TIME = args.time
 HEADLESS = args.headless
 
+if HEADLESS:
+    DEV_TOOLS = False
+else:  # Default to headed mode
+    DEV_TOOLS = True
 
 GYM_LOGIN_URL = f"https://clients.mindbodyonline.com/classic/ws?studioid={GYM_ID}"
 GYM_SCHEDULE_URL = "https://clients.mindbodyonline.com/classic/mainclass?fl=true&tabID=7"
@@ -40,8 +50,7 @@ PASSWORD = os.getenv("PASSWORD")
 DESIRED_CALENDAR_DATE = time.strftime("%m/%d/%Y", time.strptime(DESIRED_CLASS_DAY, "%B %d, %Y"))
 
 # Optional proxy - if you want to rotate or hide your IP
-USE_PROXY = False
-PROXY_SERVER = "http://your-proxy-server:port"
+USE_PROXY = args.proxy
 
 # Logging configuration
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
@@ -57,25 +66,41 @@ def book_mindbody_class():
     # Wrapper for Playwright usage
     try:
         with sync_playwright() as p:
-            # Choose your preferred browser ('chromium', 'firefox', or 'webkit')
-            browser_type = p.chromium
-
-            # If using a proxy, supply that in the browser launch configuration
+            browser_type = p.chromium  # or p.firefox, p.webkit
+            
             if USE_PROXY:
                 browser = browser_type.launch(
                     headless=HEADLESS,
-                    proxy={
-                        "server": PROXY_SERVER
-                    }
+                    devtools=DEV_TOOLS,
+                    args=["--disable-blink-features=AutomationControlled", "--no-sandbox"],
                 )
+                context = browser.new_context(
+                    user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64)…",
+                    viewport={"width":1280,"height":720},
+                    locale="en-US",
+                    timezone_id="America/New_York",
+                )
+                page = context.new_page()
+                
+                # stealth init
+                page.add_init_script("""
+                Object.defineProperty(navigator, 'webdriver', {get: () => false});
+                window.chrome = { runtime: {} };
+                Object.defineProperty(navigator, 'plugins', {get: () => [1,2,3]});
+                Object.defineProperty(navigator, 'languages', {get: () => ['en-US','en']});
+                """)
             else:
-                browser = browser_type.launch(headless=HEADLESS)
+                browser = browser_type.launch(
+                    headless=HEADLESS, 
+                    devtools=DEV_TOOLS
+                )
 
-            page = browser.new_page()
+                page = browser.new_page()
 
             # 1. Navigate to the login page
             logging.info("Navigating to login page...")
             page.goto(GYM_LOGIN_URL, timeout=10000)  # 30-second timeout
+            time.sleep(random.uniform(1,2))
 
             # 2. Fill in username and password
             logging.info("Filling in login form...")
@@ -129,7 +154,7 @@ def book_mindbody_class():
 
             # Retry logic for navigating and finding the desired class
             max_retries = 5
-            retry_delay = 10  # seconds
+            retry_delay = 4  # seconds
 
             for attempt in range(max_retries):
                 try:
