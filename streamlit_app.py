@@ -31,8 +31,8 @@ password = st.sidebar.text_input("Password", type="password")
 st.header("Class Details")
 gym_id = st.text_input("Gym ID", value="836167", help="e.g. '123456'")
 class_name = st.text_input("Class Name", help="e.g. 'Yoga Flow'")
-class_date = st.date_input("Class Date", min_value=date.today())
-class_time = st.time_input("Class Time", value=dttime(6, 15))
+class_date = st.date_input("Class Date", min_value=date.today(), format="MM/DD/YYYY")
+class_time = st.time_input("Class Time", value=dttime(17, 15))
 
 # — action button —
 if st.button("Book Class"):
