@@ -41,7 +41,8 @@ if st.button("Book Class"):
     else:
         # format exactly as: --name="Yoga Flow" --day="April 16, 2025" --time="06:15 PM EDT"
         day_str  = class_date.strftime("%B %d, %Y")
-        time_str = class_time.strftime("%I:%M %p") + " EDT"
+        hour = class_time.hour % 12 or 12
+        time_str = f"{hour}:{class_time.strftime('%M %p').lower()} EDT"
 
         cmd = [
              sys.executable,
