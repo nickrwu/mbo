@@ -7,6 +7,7 @@ import os
 from dotenv import load_dotenv
 import argparse
 import random
+import re
 
 load_dotenv()
 
@@ -132,7 +133,15 @@ def book_mindbody_class():
 
             # 5. Navigate to the class schedule page
             # Calculate the time to wait until 1 week and 15 minutes before the class time
-            class_time_struct = time.strptime(DESIRED_CLASS_DAY + " " + DESIRED_CLASS_TIME, "%B %d, %Y %I:%M %p %Z")
+            os.environ.setdefault("TZ", "America/New_York")
+            time.tzset()
+            raw = f"{DESIRED_CLASS_DAY} {DESIRED_CLASS_TIME}"
+
+            # 2) uppercase the am/pm designator (but leave "EDT" alone)
+            raw = re.sub(r'\b(am|pm)\b', lambda m: m.group().upper(), raw)
+
+            # now raw == "April 25, 2025 6:15 PM EDT"
+            class_time_struct = time.strptime(raw, "%B %d, %Y %I:%M %p %Z")
             class_time_epoch = time.mktime(class_time_struct)
             wait_until_epoch = class_time_epoch - (7 * 24 * 60 * 60) - (15 * 60)  # Subtract 1 week and 15 minutes
 
