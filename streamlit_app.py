@@ -116,7 +116,7 @@ if st.button("Book Class"):
         st.error("Please fill in username, password, gym ID, and class name.")
     else:
         # format exactly as: --name="Yoga Flow" --day="April 16, 2025" --time="06:15 PM EDT"
-        day_str  = class_date.strftime("%B %d, %Y")
+        day_str  = class_date.strftime("%B %-d, %Y")
         hour = class_time.hour % 12 or 12
         time_str = f"{hour}:{class_time.strftime('%M %p').lower()} EDT"
 
